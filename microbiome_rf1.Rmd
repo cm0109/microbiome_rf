@@ -1,0 +1,76 @@
+---
+title: "Microbiome_rf"
+author: "Chiranjit Mukherjee"
+date: "10/18/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("randomForest")
+library("plyr") # for the "arrange" function
+library("rfUtilities") # to test model significance
+library("caret") # to get leave-one-out cross-validation accuracies and also contains the nearZeroVar function 
+
+```
+
+```{r}
+otu_table <- read.table("otu_table_RF_tutorial.txt", sep="\t", header=T, row.names=1, stringsAsFactors=FALSE, comment.char="")  
+metadata <- read.table("metadata_RF_tutorial.txt", sep="\t", header=T, row.names=1, stringsAsFactors=TRUE, comment.char="")
+```
+
+```{r}
+dim(otu_table)
+#[1] 1000   40
+
+dim(metadata)
+#[1] 40  2
+
+str(metadata)
+```
+
+
+
+#### Filter out rare OTUs 
+Keeping only those OTUs which have less than 30 (75% of total number of samples) times 0 values in the dataset
+```{r}
+otu_table_rare_removed <- otu_table[rowSums(otu_table == 0) <= 0.75*ncol(otu_table), ]
+dim(otu_table_rare_removed) #  [1] 595  40
+```
+
+
+#### Re-normalize_table so that each sample's column sums to 1
+```{r}
+otu_table_rare_removed_norm <- sweep(otu_table_rare_removed, 2, colSums(otu_table_rare_removed) , '/')*1
+colSums(otu_table_rare_removed_norm)
+```
+
+
+```{r}
+otu_table_scaled <- scale(otu_table_rare_removed_norm, center = TRUE, scale = TRUE)  
+```
+
+
+```{r}
+otu_table_scaled_state <- data.frame(t(otu_table_scaled))  
+otu_table_scaled_state$state <- metadata[rownames(otu_table_scaled_state), "state"]  
+dim(otu_table_scaled_state)
+```
+
+
+
+```{r}
+otu_table_scaled_IS <- data.frame(t(otu_table_scaled))  
+otu_table_scaled_IS$IS <- metadata[rownames(otu_table_scaled_IS), "IS"]
+```
+
+
+
+```{r}
+RF_state_classify <- randomForest( x=otu_table_scaled_state[,1:(ncol(otu_table_scaled_state)-1)] , 
+                                   y=otu_table_scaled_state[ , ncol(otu_table_scaled_state)] , ntree=501, importance=TRUE, proximities=TRUE )
+```
+
