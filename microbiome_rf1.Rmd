@@ -85,7 +85,9 @@ set.seed(123); RF_IS_regress <- randomForest(x=otu_table_scaled_IS[, 1:(ncol(otu
 
 
 ### Permutation Testing Model Performance
-```{r}
+
+```{r, eval=FALSE}
+#Evaluate is set to false to reduce Knit time
 RF_state_classify_sig <- rf.significance( x=RF_state_classify,
                                           xdata=otu_table_scaled_state[,1:(ncol(otu_table_scaled_state)-1)],
                                           nperm=1000 , ntree=501 )  
@@ -97,7 +99,7 @@ RF_IS_regress_sig <- rf.significance( x=RF_IS_regress,
 ```
 
 
-
+### Accuracy Estimated by Cross-validation
 
 ```{r}
 fit_control <- trainControl(method = "LOOCV")    
@@ -110,5 +112,19 @@ RF_IS_regress_loocv <- train(otu_table_scaled_IS[,1:(ncol(otu_table_scaled_IS)-1
                              method="rf", ntree=501 , tuneGrid=data.frame( mtry=215 ), trControl=fit_control)
 
 ```
+
+
+
+## Identifying Important Features
+
+```{r}
+
+```
+
+
+
+
+
+
 
 
