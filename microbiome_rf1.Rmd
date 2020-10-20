@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library("randomForest")
 library("plyr") # for the "arrange" function
 library("rfUtilities") # to test model significance
-library("caret") # to get leave-one-out cross-validation accuracies and also contains the nearZeroVar function 
+library("caret") # to get leave-one-out cross-validation accuracies and also contains the nearZeroVar function
+library(e1071)
 
 ```
 
@@ -81,4 +82,33 @@ set.seed(123); RF_IS_regress <- randomForest(x=otu_table_scaled_IS[, 1:(ncol(otu
                                              y=otu_table_scaled_IS[, ncol(otu_table_scaled_IS)],
                                              ntree=501, importance=TRUE, proximities=TRUE )  
 ```
+
+
+### Permutation Testing Model Performance
+```{r}
+RF_state_classify_sig <- rf.significance( x=RF_state_classify,
+                                          xdata=otu_table_scaled_state[,1:(ncol(otu_table_scaled_state)-1)],
+                                          nperm=1000 , ntree=501 )  
+
+
+RF_IS_regress_sig <- rf.significance( x=RF_IS_regress,
+                                      xdata=otu_table_scaled_IS[,1:(ncol(otu_table_scaled_IS)-1)],
+                                      nperm=1000 , ntree=501 )  
+```
+
+
+
+
+```{r}
+fit_control <- trainControl(method = "LOOCV")    
+RF_state_classify_loocv <- train(otu_table_scaled_state[,1:(ncol(otu_table_scaled_state)-1)],
+                                  y=otu_table_scaled_state[, ncol(otu_table_scaled_state)], 
+                                  method="rf", ntree=501 , tuneGrid=data.frame( mtry=25 ), trControl=fit_control)
+
+RF_IS_regress_loocv <- train(otu_table_scaled_IS[,1:(ncol(otu_table_scaled_IS)-1)],
+                             y=otu_table_scaled_IS[, ncol(otu_table_scaled_IS)], 
+                             method="rf", ntree=501 , tuneGrid=data.frame( mtry=215 ), trControl=fit_control)
+
+```
+
 
