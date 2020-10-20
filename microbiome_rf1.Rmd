@@ -48,7 +48,8 @@ otu_table_rare_removed_norm <- sweep(otu_table_rare_removed, 2, colSums(otu_tabl
 colSums(otu_table_rare_removed_norm)
 ```
 
-
+#### Data Transformation
+One approach is to standardize the data by subtracting each sample's mean (center) and then dividing by the sample's standard deviation (scale). In other words, each value is converted into a Z-score.
 ```{r}
 otu_table_scaled <- scale(otu_table_rare_removed_norm, center = TRUE, scale = TRUE)  
 ```
