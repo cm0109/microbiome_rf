@@ -55,6 +55,8 @@ otu_table_scaled <- scale(otu_table_rare_removed_norm, center = TRUE, scale = TR
 ```
 
 
+#### Running Model
+input tables for classification of state:
 ```{r}
 otu_table_scaled_state <- data.frame(t(otu_table_scaled))  
 otu_table_scaled_state$state <- metadata[rownames(otu_table_scaled_state), "state"]  
@@ -62,7 +64,7 @@ dim(otu_table_scaled_state)
 ```
 
 
-
+input tables for regression of inflammation score (IS):
 ```{r}
 otu_table_scaled_IS <- data.frame(t(otu_table_scaled))  
 otu_table_scaled_IS$IS <- metadata[rownames(otu_table_scaled_IS), "IS"]
