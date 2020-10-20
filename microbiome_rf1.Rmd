@@ -73,7 +73,12 @@ otu_table_scaled_IS$IS <- metadata[rownames(otu_table_scaled_IS), "IS"]
 
 
 ```{r}
-RF_state_classify <- randomForest( x=otu_table_scaled_state[,1:(ncol(otu_table_scaled_state)-1)] , 
-                                   y=otu_table_scaled_state[ , ncol(otu_table_scaled_state)] , ntree=501, importance=TRUE, proximities=TRUE )
+set.seed(123); RF_state_classify <- randomForest(x=otu_table_scaled_state[, 1:(ncol(otu_table_scaled_state)-1)],
+                                                 y=otu_table_scaled_state[, ncol(otu_table_scaled_state)],
+                                                 ntree=501, importance=TRUE, proximities=TRUE )
+
+set.seed(123); RF_IS_regress <- randomForest(x=otu_table_scaled_IS[, 1:(ncol(otu_table_scaled_IS)-1)], 
+                                             y=otu_table_scaled_IS[, ncol(otu_table_scaled_IS)],
+                                             ntree=501, importance=TRUE, proximities=TRUE )  
 ```
 
