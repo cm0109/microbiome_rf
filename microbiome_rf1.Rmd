@@ -3,6 +3,7 @@ title: "Microbiome_rf"
 author: "Chiranjit Mukherjee"
 date: "10/18/2020"
 output: html_document
+  keep_md=TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +16,7 @@ library("plyr") # for the "arrange" function
 library("rfUtilities") # to test model significance
 library("caret") # to get leave-one-out cross-validation accuracies and also contains the nearZeroVar function
 library(e1071)
-
+library(ggplot2)
 ```
 
 ```{r}
@@ -118,10 +119,20 @@ RF_IS_regress_loocv <- train(otu_table_scaled_IS[,1:(ncol(otu_table_scaled_IS)-1
 ## Identifying Important Features
 
 ```{r}
+RF_state_classify_imp <- as.data.frame(RF_state_classify$importance)
+RF_state_classify_imp$features <- rownames(RF_state_classify_imp)
+RF_state_classify_imp_sorted <- arrange(RF_state_classify_imp, desc(MeanDecreaseAccuracy))
 
+barplot(RF_state_classify_imp_sorted[1:10,"MeanDecreaseAccuracy"], names.arg=RF_state_classify_imp_sorted[1:10,"features"] , 
+        ylab="Mean Decrease in Accuracy (Variable Importance)", las=2, ylim=c(0,0.02), main="Classification RF") 
 ```
 
 
+```{r}
+
+
+ggplot(RF_state_classify_imp_sorted[c(1:25), ], aes(features, MeanDecreaseAccuracy)) + geom_bar(stat="identity")
+```
 
 
 
