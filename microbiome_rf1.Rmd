@@ -56,13 +56,13 @@ two_cols <- c("forestgreen", "firebrick4")
 # Plot NMDS
 ggplot(otu_table_pct.mds.df, aes(x=NMDS1, y=NMDS2)) + stat_ellipse(alpha=0.8, aes(color=state), show.legend = F, lwd=0.2) + 
   geom_point(alpha=0.9, aes(fill = state), size=3, color="black", pch=21, stroke=0.2) + scale_fill_manual(values=two_cols) + scale_color_manual(values=two_cols) + 
-  labs(title = "Species Level: Beta Diversity Comparison", subtitle = "Relative Abundance", fill="Subject state") +
-  annotate("text", x = max(otu_table_pct.mds.df$NMDS1)-0.2, y = max(otu_table_pct.mds.df$NMDS2), 
+  labs(title = "Beta Diversity Comparison", subtitle = "Relative Abundance", fill="Subject state") +
+  annotate("text", x = (min(otu_table_pct.mds.df$NMDS1) + max(otu_table_pct.mds.df$NMDS1))/2, y = max(otu_table_pct.mds.df$NMDS2), 
            label = paste("p <", otu_table_pct.perm$aov.tab$`Pr(>F)`[1], "(PERMANOVA)", sep=" ")) + theme_classic() +
   theme(plot.title = element_text(size=15, face="bold", hjust=0.5), plot.subtitle = element_text(size=10, hjust=0.5), 
         axis.title = element_text(size=10, face="bold"), axis.text = element_text(size=8, face="bold"), legend.position="bottom", axis.line = element_line(size = 0.3),
         legend.title = element_text(size=13, face="bold"), legend.text = element_text(size = 11))
-ggsave(file = "figs/otu_table_pct_mds.pdf", width = 10, height = 6, units = "in")
+#ggsave(file = "figs/otu_table_pct_mds.pdf", width = 10, height = 6, units = "in")
 
 ```
 
@@ -203,7 +203,7 @@ barplot(RF_state_classify_imp_sorted[1:10,"MeanDecreaseAccuracy"], names.arg=RF_
 
 ggplot(RF_state_classify_imp_sorted[c(1:25), ], aes(features, MeanDecreaseAccuracy)) + geom_bar(stat="identity")
 ```
-
+MeanDecreaseAccuracy: Measure of the extent to which a variable improves the accuracy of the forest in predicting the classification. Higher values mean that the variable improves prediction. In a rough sense, it can be interpreted as showing the amount of increase in classification accuracy that is provided by including the variable in the model
 
 
 #### Before and After NMDS 
